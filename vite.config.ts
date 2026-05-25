@@ -8,6 +8,7 @@ export default defineConfig({
     tailwindcss(),
     react()
   ],
+  base: '/etoh/',
   server: {
     port: 3000
   },

@@ -7,19 +7,19 @@ import PatientDashboard from '../pages/patient/PatientDashboard';
 
 const ProtectedRoute = ({ children, allowedRoles }: { children: React.ReactNode, allowedRoles?: string[] }) => {
   const { isAuthenticated, role } = useAuthStore();
-  
+
   if (!isAuthenticated) return <Navigate to="/auth" replace />;
   if (allowedRoles && role && !allowedRoles.includes(role)) {
     return <Navigate to="/" replace />; // Or an unauthorized page
   }
-  
+
   return <>{children}</>;
 };
 
 const RootRoute = () => {
   const { isAuthenticated, role } = useAuthStore();
   if (!isAuthenticated) return <Navigate to="/auth" replace />;
-  
+
   switch (role) {
     case 'patient': return <Navigate to="/patient" replace />;
     case 'doctor': return <Navigate to="/doctor" replace />;
