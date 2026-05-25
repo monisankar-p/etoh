@@ -172,7 +172,7 @@ const router = createBrowserRouter([
       { path: 'settings', element: <Settings /> },
     ]
   }
-]);
+], { basename: '/etoh/' });
 
 export function AppRouter() {
   return <RouterProvider router={router} />;
