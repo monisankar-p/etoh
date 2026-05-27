@@ -1,6 +1,6 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Activity, Users, Settings, LogOut, Pill, CheckSquare, Clock, Menu, X } from 'lucide-react';
+import { Activity, Users, Settings, LogOut, Pill, CheckSquare, Clock, Menu, X, GraduationCap } from 'lucide-react';
 import { useAuthStore } from '../stores/useAuthStore';
 import { Button } from '../components/ui/button';
 import { useState } from 'react';
@@ -11,6 +11,7 @@ const navItems = [
   { icon: Pill, label: 'Medications', path: '/nurse/medications' },
   { icon: Activity, label: 'Vitals Entry', path: '/nurse/vitals' },
   { icon: Clock, label: 'Care Timeline', path: '/nurse/timeline' },
+  { icon: GraduationCap, label: 'Skills & Competency', path: '/nurse/skills' },
 ];
 
 export default function NurseLayout() {

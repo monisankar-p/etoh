@@ -18,6 +18,13 @@ export class MockAIService {
       responseText = "Looking at the real-time telemetry, Heart Rate is stable at 72 bpm, SpO2 is 98%, and BP is 118/78. No immediate anomalies detected.";
     } else if (prompt.toLowerCase().includes('report')) {
       responseText = "I've processed the report. The key findings include: \n\n1. Elevated WBC count.\n2. Normal hemoglobin levels.\n\nRecommendation: Monitor for potential infection.";
+    } else if (prompt.toLowerCase().includes('genetic') || prompt.toLowerCase().includes('family')) {
+      const familyInsights = [
+        "High diabetes risk detected across 3 generations on the maternal side. Recommending early HbA1c screening.",
+        "Cardiac disease pattern identified in immediate family (Father, Paternal Grandfather). Significant trend of early-onset hypertension.",
+        "Hypertension trend increasing across household. Cross-generational data shows progressive early onset. Proactive BP management advised."
+      ];
+      responseText = familyInsights[Math.floor(Math.random() * familyInsights.length)];
     }
 
     const chunks = responseText.split(/(?<=\s)/); // Split by words keeping spaces
