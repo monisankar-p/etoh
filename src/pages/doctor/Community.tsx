@@ -9,7 +9,9 @@ export default function Community() {
   const [activeTab, setActiveTab] = useState<'feed' | 'mdt' | 'research' | 'referrals'>('feed');
   const [activeSpecialty, setActiveSpecialty] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isReferralModalOpen, setIsReferralModalOpen] = useState(false);
   const [newDiscussion, setNewDiscussion] = useState({ title: '', tags: '', specialty: 'Cardiology' });
+  const [referralData, setReferralData] = useState({ patient: '', specialty: 'Neurology', reason: '' });
 
   const specialties = ['All', 'Cardiology', 'Neurology', 'Pediatrics', 'Oncology', 'Internal Med'];
 
@@ -212,7 +214,9 @@ export default function Community() {
           <h2 className="font-bold text-lg flex items-center gap-2"><LinkIcon className="w-5 h-5 text-emerald-500" /> Internal Referral Workflows</h2>
           <p className="text-sm text-muted-foreground">Seamlessly transfer patient context to specialists within the network.</p>
         </div>
-        <Button className="bg-emerald-500 hover:bg-emerald-600"><Stethoscope className="w-4 h-4 mr-2" /> New Referral</Button>
+        <Button className="bg-emerald-500 hover:bg-emerald-600" onClick={() => setIsReferralModalOpen(true)}>
+          <Stethoscope className="w-4 h-4 mr-2" /> New Referral
+        </Button>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -423,6 +427,63 @@ export default function Community() {
             <div className="p-6 border-t flex justify-end gap-2 bg-muted/30">
               <Button variant="outline" onClick={() => setIsModalOpen(false)}>Cancel</Button>
               <Button className="bg-emerald-500 hover:bg-emerald-600" onClick={handlePostDiscussion}>Post Discussion</Button>
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {/* New Referral Modal */}
+      {isReferralModalOpen && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <Card className="w-full max-w-lg shadow-2xl border-emerald-500/30">
+            <CardHeader className="border-b bg-emerald-500/5 flex flex-row items-center justify-between">
+              <div>
+                <CardTitle>New Internal Referral</CardTitle>
+                <CardDescription>Securely transfer patient context to a network specialist.</CardDescription>
+              </div>
+              <Button variant="ghost" size="icon" onClick={() => setIsReferralModalOpen(false)}>
+                <X className="w-5 h-5" />
+              </Button>
+            </CardHeader>
+            <CardContent className="space-y-4 pt-6">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Patient Name or MRN</label>
+                <Input 
+                  value={referralData.patient} 
+                  onChange={e => setReferralData({...referralData, patient: e.target.value})} 
+                  placeholder="e.g., John Doe or MRN-12345" 
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Target Specialty</label>
+                <select 
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  value={referralData.specialty}
+                  onChange={e => setReferralData({...referralData, specialty: e.target.value})}
+                >
+                  {specialties.filter(s => s !== 'All').map(s => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-2">
+                  <label className="text-sm font-medium">Reason for Referral</label>
+                  <textarea 
+                    className="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    placeholder="Provide brief clinical context..."
+                    value={referralData.reason}
+                    onChange={e => setReferralData({...referralData, reason: e.target.value})}
+                  />
+              </div>
+            </CardContent>
+            <div className="p-6 border-t flex justify-end gap-2 bg-muted/30">
+              <Button variant="outline" onClick={() => setIsReferralModalOpen(false)}>Cancel</Button>
+              <Button className="bg-emerald-500 hover:bg-emerald-600" onClick={() => {
+                if (!referralData.patient) return;
+                setIsReferralModalOpen(false);
+                setReferralData({ patient: '', specialty: 'Neurology', reason: '' });
+                toast.success('Referral request sent successfully');
+              }}>Send Referral</Button>
             </div>
           </Card>
         </div>
