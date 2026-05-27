@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Card, CardContent } from '../../components/ui/card';
-import { ClipboardList, MoreVertical, ArrowRightLeft, Users, Pencil } from 'lucide-react';
+import { ClipboardList, ArrowRightLeft, Users, Pencil } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { Dialog } from '../../components/ui/dialog';
 import { Input } from '../../components/ui/input';

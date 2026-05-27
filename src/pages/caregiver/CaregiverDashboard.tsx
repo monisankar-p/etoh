@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
-import { HeartHandshake, AlertTriangle, Activity, Pill, Calendar, Users, PhoneCall, Stethoscope, ArrowRight, BrainCircuit, MapPin, CheckCircle2, TrendingUp, Clock, FileText, Video, HeartPulse, Droplets, Thermometer } from 'lucide-react';
+import { HeartHandshake, AlertTriangle, Activity, Pill, Calendar, Users, PhoneCall, Stethoscope, ArrowRight, BrainCircuit, MapPin, CheckCircle2, Clock, FileText, Video, Droplets } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { Dialog } from '../../components/ui/dialog';
 import { toast } from 'sonner';
-import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 export default function CaregiverDashboard() {
   const [activeTab, setActiveTab] = useState<'overview' | 'operations' | 'homecare' | 'timeline'>('overview');
