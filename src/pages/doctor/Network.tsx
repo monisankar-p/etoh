@@ -1,14 +1,26 @@
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
-import { Network as NetworkIcon, MapPin, Building2, UserCircle2 } from 'lucide-react';
+import { Network as NetworkIcon, MapPin, Building2, UserCircle2, X } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { toast } from 'sonner';
+import { Input } from '../../components/ui/input';
 
 export default function Network() {
-  const affiliations = [
+  const [isWizardOpen, setIsWizardOpen] = useState(false);
+  const [affiliations, setAffiliations] = useState([
     { hospital: 'etoh General (Primary)', role: 'Senior Consultant', distance: '0 miles' },
     { hospital: 'St. Mary Specialized Center', role: 'Visiting Cardiologist', distance: '4.2 miles' },
     { hospital: 'Mercy Community Clinic', role: 'Telehealth Supervisor', distance: '12 miles' },
-  ];
+  ]);
+  const [newAffiliation, setNewAffiliation] = useState({ hospital: '', role: '', distance: '' });
+
+  const handleAddAffiliation = () => {
+    if (!newAffiliation.hospital) return;
+    setAffiliations([...affiliations, newAffiliation]);
+    setIsWizardOpen(false);
+    setNewAffiliation({ hospital: '', role: '', distance: '' });
+    toast.success('Affiliation successfully added!');
+  };
 
   return (
     <div className="p-8 h-full flex flex-col bg-muted/10 overflow-y-auto">
@@ -20,7 +32,7 @@ export default function Network() {
           </h1>
           <p className="text-muted-foreground">Manage your affiliations, cross-hospital scheduling, and consultant mappings.</p>
         </div>
-        <Button className="bg-emerald-500 hover:bg-emerald-600" onClick={() => toast.info('Opening affiliation wizard...')}>Add Affiliation</Button>
+        <Button className="bg-emerald-500 hover:bg-emerald-600" onClick={() => setIsWizardOpen(true)}>Add Affiliation</Button>
       </div>
 
       <div className="max-w-5xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -88,6 +100,55 @@ export default function Network() {
         </div>
 
       </div>
+
+      {/* Affiliation Wizard Modal */}
+      {isWizardOpen && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <Card className="w-full max-w-lg shadow-2xl border-emerald-500/30">
+            <CardHeader className="border-b bg-emerald-500/5 flex flex-row items-center justify-between">
+              <div>
+                <CardTitle>Add Network Affiliation</CardTitle>
+                <CardDescription>Connect to a new hospital or clinic.</CardDescription>
+              </div>
+              <Button variant="ghost" size="icon" onClick={() => setIsWizardOpen(false)}>
+                <X className="w-5 h-5" />
+              </Button>
+            </CardHeader>
+            <CardContent className="space-y-4 pt-6">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Hospital or Clinic Name</label>
+                <Input 
+                  value={newAffiliation.hospital} 
+                  onChange={e => setNewAffiliation({...newAffiliation, hospital: e.target.value})} 
+                  placeholder="e.g., City General Hospital" 
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Your Role / Title</label>
+                  <Input 
+                    value={newAffiliation.role} 
+                    onChange={e => setNewAffiliation({...newAffiliation, role: e.target.value})} 
+                    placeholder="e.g., Attending Physician" 
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Distance</label>
+                  <Input 
+                    value={newAffiliation.distance} 
+                    onChange={e => setNewAffiliation({...newAffiliation, distance: e.target.value})} 
+                    placeholder="e.g., 5 miles" 
+                  />
+                </div>
+              </div>
+            </CardContent>
+            <div className="p-6 border-t flex justify-end gap-2 bg-muted/30">
+              <Button variant="outline" onClick={() => setIsWizardOpen(false)}>Cancel</Button>
+              <Button className="bg-emerald-500 hover:bg-emerald-600" onClick={handleAddAffiliation}>Connect Affiliation</Button>
+            </div>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }
