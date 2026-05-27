@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { HeartPulse, Stethoscope, User, ShieldAlert, Activity, ClipboardType } from 'lucide-react';
+import { HeartPulse, Stethoscope, User, ShieldAlert, Activity, ClipboardType, HeartHandshake } from 'lucide-react';
 import { useAuthStore } from '../stores/useAuthStore';
 import { useEffect } from 'react';
 
@@ -10,6 +10,7 @@ const roles = [
   { id: 'nurse', label: 'Nurse Suite', icon: Activity, desc: 'Shift & Vitals Management', color: 'bg-amber-500/10 text-amber-500 border-amber-500/20' },
   { id: 'admin', label: 'Admin Suite', icon: ShieldAlert, desc: 'Hospital Operations', color: 'bg-purple-500/10 text-purple-500 border-purple-500/20' },
   { id: 'executive', label: 'Field Executive', icon: ClipboardType, desc: 'Assisted Registration', color: 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20' },
+  { id: 'caregiver', label: 'Primary Caregiver', icon: HeartHandshake, desc: 'Family & Home Care', color: 'bg-violet-500/10 text-violet-500 border-violet-500/20' },
 ] as const;
 
 export default function AuthPage() {
@@ -22,7 +23,7 @@ export default function AuthPage() {
     }
   }, [isAuthenticated, role, navigate]);
 
-  const handleLogin = (selectedRole: 'patient' | 'doctor' | 'nurse' | 'admin' | 'executive') => {
+  const handleLogin = (selectedRole: 'patient' | 'doctor' | 'nurse' | 'admin' | 'executive' | 'caregiver') => {
     login(selectedRole);
   };
 

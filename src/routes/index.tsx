@@ -26,6 +26,7 @@ const RootRoute = () => {
     case 'nurse': return <Navigate to="/nurse" replace />;
     case 'admin': return <Navigate to="/admin" replace />;
     case 'executive': return <Navigate to="/executive" replace />;
+    case 'caregiver': return <Navigate to="/caregiver" replace />;
     default: return <Navigate to="/auth" replace />;
   }
 };
@@ -50,6 +51,13 @@ import ExecutiveLayout from '../layouts/ExecutiveLayout';
 import ExecutiveDashboard from '../pages/executive/ExecutiveDashboard';
 import AssistedRegistration from '../pages/executive/AssistedRegistration';
 import IdentityVerification from '../pages/executive/IdentityVerification';
+import CaregiverLayout from '../layouts/CaregiverLayout';
+import CaregiverDashboard from '../pages/caregiver/CaregiverDashboard';
+import EmergencyCenter from '../pages/caregiver/EmergencyCenter';
+import HomeCare from '../pages/caregiver/HomeCare';
+import CaregiverMedications from '../pages/caregiver/Medications';
+import CaregiverAppointments from '../pages/caregiver/Appointments';
+import AiInsights from '../pages/caregiver/AiInsights';
 
 import Consultations from '../pages/doctor/Consultations';
 import SoapNotes from '../pages/doctor/SoapNotes';
@@ -169,6 +177,23 @@ const router = createBrowserRouter([
       { index: true, element: <ExecutiveDashboard /> },
       { path: 'registration', element: <AssistedRegistration /> },
       { path: 'verification', element: <IdentityVerification /> },
+      { path: 'settings', element: <Settings /> },
+    ]
+  },
+  {
+    path: '/caregiver',
+    element: (
+      <ProtectedRoute allowedRoles={['caregiver']}>
+        <CaregiverLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      { index: true, element: <CaregiverDashboard /> },
+      { path: 'emergency', element: <EmergencyCenter /> },
+      { path: 'homecare', element: <HomeCare /> },
+      { path: 'medications', element: <CaregiverMedications /> },
+      { path: 'appointments', element: <CaregiverAppointments /> },
+      { path: 'insights', element: <AiInsights /> },
       { path: 'settings', element: <Settings /> },
     ]
   }

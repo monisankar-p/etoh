@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-type Role = 'patient' | 'doctor' | 'nurse' | 'admin' | 'executive' | null;
+type Role = 'patient' | 'doctor' | 'nurse' | 'admin' | 'executive' | 'caregiver' | null;
 
 interface AuthState {
   role: Role;
@@ -24,7 +24,7 @@ export const useAuthStore = create<AuthState>()(
       login: (role) => set({ 
         role, 
         isAuthenticated: true,
-        user: { id: 'usr_1', name: role === 'patient' ? 'Alex Mercer' : role === 'executive' ? 'Agent Marcus' : 'Dr. Sarah Chen' }
+        user: { id: 'usr_1', name: role === 'patient' ? 'Alex Mercer' : role === 'executive' ? 'Agent Marcus' : role === 'caregiver' ? 'Elena Mercer' : 'Dr. Sarah Chen' }
       }),
       logout: () => set({ role: null, isAuthenticated: false, user: null }),
     }),
