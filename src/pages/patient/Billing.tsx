@@ -5,12 +5,15 @@ import { toast } from 'sonner';
 import { useState } from 'react';
 import { DocumentViewer } from '../../components/ui/DocumentViewer';
 import { SimulatedActionModal } from '../../components/ui/SimulatedActionModal';
+import { useTranslation } from '../../i18n';
 
 export default function Billing() {
+  const { t } = useTranslation();
+  
   const claims = [
-    { id: 'CLM-90210', date: 'Oct 12, 2023', provider: 'etoh General Hospital', amount: 450.00, status: 'Processing', type: 'Consultation' },
-    { id: 'CLM-88342', date: 'Sep 28, 2023', provider: 'etoh Cardiology', amount: 1200.00, status: 'Approved', type: 'Procedure' },
-    { id: 'CLM-88120', date: 'Sep 15, 2023', provider: 'etoh Labs', amount: 150.00, status: 'Requires Info', type: 'Pathology' },
+    { id: 'CLM-90210', date: 'Oct 12, 2023', provider: 'etoh General Hospital', amount: 450.00, status: t('billing.processing'), type: 'Consultation' },
+    { id: 'CLM-88342', date: 'Sep 28, 2023', provider: 'etoh Cardiology', amount: 1200.00, status: t('billing.approved'), type: 'Procedure' },
+    { id: 'CLM-88120', date: 'Sep 15, 2023', provider: 'etoh Labs', amount: 150.00, status: t('billing.requiresInfo'), type: 'Pathology' },
   ];
 
   const [docViewerConfig, setDocViewerConfig] = useState<{isOpen: boolean; title: string}>({ isOpen: false, title: '' });
@@ -21,16 +24,16 @@ export default function Billing() {
   };
 
   return (
-    <div className="p-8 h-full flex flex-col bg-muted/10 overflow-y-auto">
+    <div className="p-4 md:p-8 h-full flex flex-col bg-muted/10 overflow-y-auto">
       <div className="mb-8 max-w-5xl mx-auto w-full flex justify-between items-end">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3 mb-2">
             <CreditCard className="w-8 h-8 text-primary" />
-            Insurance & Billing
+            {t('billing.title')}
           </h1>
-          <p className="text-muted-foreground">Track your claims, view coverage, and manage medical expenses.</p>
+          <p className="text-muted-foreground">{t('billing.subtitle')}</p>
         </div>
-        <Button className="bg-primary hover:bg-primary/90" onClick={handlePayment}>Pay Outstanding Balance</Button>
+        <Button className="bg-primary hover:bg-primary/90" onClick={handlePayment}>{t('billing.payBalance')}</Button>
       </div>
 
       <div className="max-w-5xl mx-auto w-full grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -38,7 +41,7 @@ export default function Billing() {
           <CardContent className="p-6">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Outstanding Balance</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('billing.outstandingBalance')}</p>
                 <p className="text-3xl font-bold mt-2">$0.00</p>
               </div>
               <div className="p-3 bg-primary/10 rounded-full">
@@ -52,7 +55,7 @@ export default function Billing() {
           <CardContent className="p-6">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Deductible Met</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('billing.deductibleMet')}</p>
                 <p className="text-3xl font-bold mt-2">$2,150<span className="text-sm font-normal text-muted-foreground"> / $3,000</span></p>
               </div>
               <div className="p-3 bg-emerald-500/10 rounded-full">
@@ -69,7 +72,7 @@ export default function Billing() {
           <CardContent className="p-6">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Active Policy</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('billing.activePolicy')}</p>
                 <p className="text-xl font-bold mt-2">BlueCross Shield</p>
                 <p className="text-xs text-muted-foreground">PPO Premium</p>
               </div>
@@ -84,20 +87,20 @@ export default function Billing() {
       <div className="max-w-5xl mx-auto w-full">
         <Card>
           <CardHeader>
-            <CardTitle>Recent Claims</CardTitle>
-            <CardDescription>Status of claims submitted to your insurance provider.</CardDescription>
+            <CardTitle>{t('billing.recentClaims')}</CardTitle>
+            <CardDescription>{t('billing.claimStatus')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="rounded-xl border overflow-hidden">
               <table className="w-full text-sm text-left">
                 <thead className="bg-muted/50 border-b">
                   <tr>
-                    <th className="p-4 font-semibold text-muted-foreground">Claim ID</th>
-                    <th className="p-4 font-semibold text-muted-foreground">Date</th>
-                    <th className="p-4 font-semibold text-muted-foreground">Provider</th>
-                    <th className="p-4 font-semibold text-muted-foreground">Amount</th>
-                    <th className="p-4 font-semibold text-muted-foreground">Status</th>
-                    <th className="p-4 font-semibold text-muted-foreground">Action</th>
+                    <th className="p-4 font-semibold text-muted-foreground">{t('billing.claimId')}</th>
+                    <th className="p-4 font-semibold text-muted-foreground">{t('billing.date')}</th>
+                    <th className="p-4 font-semibold text-muted-foreground">{t('billing.provider')}</th>
+                    <th className="p-4 font-semibold text-muted-foreground">{t('billing.amount')}</th>
+                    <th className="p-4 font-semibold text-muted-foreground">{t('billing.status')}</th>
+                    <th className="p-4 font-semibold text-muted-foreground">{t('billing.action')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -112,12 +115,12 @@ export default function Billing() {
                       <td className="p-4 font-mono">${claim.amount.toFixed(2)}</td>
                       <td className="p-4">
                         <span className={`px-2 py-1 rounded text-xs font-bold uppercase flex items-center w-max gap-1 ${
-                          claim.status === 'Approved' ? 'bg-emerald-500/10 text-emerald-600' :
-                          claim.status === 'Processing' ? 'bg-blue-500/10 text-blue-600' : 'bg-amber-500/10 text-amber-600'
+                          claim.status === t('billing.approved') ? 'bg-emerald-500/10 text-emerald-600' :
+                          claim.status === t('billing.processing') ? 'bg-blue-500/10 text-blue-600' : 'bg-amber-500/10 text-amber-600'
                         }`}>
-                          {claim.status === 'Approved' && <CheckCircle2 className="w-3 h-3" />}
-                          {claim.status === 'Processing' && <Clock className="w-3 h-3" />}
-                          {claim.status === 'Requires Info' && <AlertTriangle className="w-3 h-3" />}
+                          {claim.status === t('billing.approved') && <CheckCircle2 className="w-3 h-3" />}
+                          {claim.status === t('billing.processing') && <Clock className="w-3 h-3" />}
+                          {claim.status === t('billing.requiresInfo') && <AlertTriangle className="w-3 h-3" />}
                           {claim.status}
                         </span>
                       </td>

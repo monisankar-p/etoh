@@ -39,6 +39,8 @@ import Genetics from '../pages/patient/Genetics';
 import Triage from '../pages/patient/Triage';
 import TestsImaging from '../pages/patient/TestsImaging';
 import Billing from '../pages/patient/Billing';
+import Appointments from '../pages/patient/Appointments';
+import Symptoms from '../pages/patient/Symptoms';
 import Settings from '../pages/Settings';
 
 import DoctorLayout from '../layouts/DoctorLayout';
@@ -108,6 +110,8 @@ const router = createBrowserRouter([
       { path: 'triage', element: <Triage /> },
       { path: 'tests', element: <TestsImaging /> },
       { path: 'billing', element: <Billing /> },
+      { path: 'appointments', element: <Appointments /> },
+      { path: 'symptoms', element: <Symptoms /> },
       { path: 'settings', element: <Settings /> },
     ]
   },

@@ -5,6 +5,8 @@ import { Button } from '../../components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { extractSymptoms, getNextQuestion, calculateSeverity } from '../../services/triageService';
 import type { ExtractedSymptoms, FollowUpQuestion, AssessmentResult } from '../../services/triageService';
+import { useTranslation } from '../../i18n';
+import { useLanguageStore } from '../../stores/useLanguageStore';
 
 interface ChatMessage {
   id: string;
@@ -21,6 +23,9 @@ declare global {
 }
 
 export default function Triage() {
+  const { t } = useTranslation();
+  const { language } = useLanguageStore();
+
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [analyzing, setAnalyzing] = useState(false);
   
@@ -47,7 +52,17 @@ export default function Triage() {
       const recognition = new SpeechRecognition();
       recognition.continuous = true;
       recognition.interimResults = true;
-      recognition.lang = 'en-US';
+      
+      const langMap: Record<string, string> = {
+        'en': 'en-US',
+        'hi': 'hi-IN',
+        'bn': 'bn-IN',
+        'or': 'or-IN', // Experimental or fallback
+        'ta': 'ta-IN',
+        'te': 'te-IN',
+        'mr': 'mr-IN'
+      };
+      recognition.lang = langMap[language] || 'en-US';
 
       recognition.onresult = (event: any) => {
         let currentTranscript = '';
@@ -76,7 +91,7 @@ export default function Triage() {
 
       recognitionRef.current = recognition;
     }
-  }, []);
+  }, [language]);
 
   useEffect(() => {
     if (endMessagesRef.current) {
@@ -184,13 +199,13 @@ export default function Triage() {
   };
 
   return (
-    <div className="p-8 h-full flex flex-col bg-muted/10 overflow-y-auto">
+    <div className="p-4 md:p-8 h-full flex flex-col bg-muted/10 overflow-y-auto">
       <div className="mb-8 max-w-4xl mx-auto w-full">
         <h1 className="text-3xl font-bold flex items-center gap-3 mb-2">
           <Stethoscope className="w-8 h-8 text-primary" />
-          Voice-Based Symptom Triage
+          {t('triage.title')}
         </h1>
-        <p className="text-muted-foreground">Describe your symptoms naturally. Our AI will guide you through a dynamic assessment.</p>
+        <p className="text-muted-foreground">{t('triage.subtitle')}</p>
       </div>
 
       <div className="max-w-4xl mx-auto w-full flex-1 flex flex-col">

@@ -6,6 +6,7 @@ import { Input } from '../../components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { MockAIService } from '../../services/mockAIService';
 import ReactMarkdown from 'react-markdown';
+import { useTranslation } from '../../i18n';
 
 interface ChatMessage {
   id: string;
@@ -15,11 +16,13 @@ interface ChatMessage {
 }
 
 export default function PatientDashboard() {
+  const { t } = useTranslation();
+
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
       role: 'ai',
-      content: "Hello Alex. I'm etoh, your personal health copilot. I've reviewed your latest vitals and they look stable. How are you feeling today after starting the new Metoprolol dosage?",
+      content: t('dashboard.greeting'),
     }
   ]);
   const [input, setInput] = useState('');
@@ -61,12 +64,12 @@ export default function PatientDashboard() {
           <div>
             <h2 className="text-xl font-bold flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-primary" />
-              Health Copilot
+              {t('dashboard.title')}
             </h2>
-            <p className="text-sm text-muted-foreground">Always context-aware and medically aligned.</p>
+            <p className="text-sm text-muted-foreground">{t('dashboard.subtitle')}</p>
           </div>
           <Button variant="outline" size="sm" className="gap-2">
-            <Upload className="w-4 h-4" /> Upload Report
+            <Upload className="w-4 h-4" /> {t('dashboard.uploadReport')}
           </Button>
         </div>
 
@@ -122,11 +125,11 @@ export default function PatientDashboard() {
 
         <div className="p-4 bg-background border-t">
           <div className="max-w-4xl mx-auto flex gap-2 mb-2">
-            <Button variant="outline" size="sm" className="text-xs rounded-full h-8" onClick={() => setInput('What does my latest blood report mean?')}>
-              Interpret Blood Report
+            <Button variant="outline" size="sm" className="text-xs rounded-full h-8" onClick={() => setInput(t('dashboard.askBloodReport'))}>
+              {t('dashboard.interpretReport')}
             </Button>
-            <Button variant="outline" size="sm" className="text-xs rounded-full h-8" onClick={() => setInput('I have a slight headache and fatigue today.')}>
-              Log Symptom
+            <Button variant="outline" size="sm" className="text-xs rounded-full h-8" onClick={() => setInput(t('dashboard.headacheFatigue'))}>
+              {t('dashboard.logSymptom')}
             </Button>
           </div>
           <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="max-w-4xl mx-auto relative flex items-center">
@@ -137,7 +140,7 @@ export default function PatientDashboard() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               disabled={isStreaming}
-              placeholder="Ask etoh anything about your health..."
+              placeholder={t('dashboard.placeholder')}
               className="pl-12 pr-14 py-6 rounded-2xl bg-muted/50 border-transparent focus-visible:ring-primary/50 text-base"
             />
             <Button 
@@ -156,16 +159,16 @@ export default function PatientDashboard() {
       <div className="w-80 bg-card/30 hidden lg:flex flex-col p-6 space-y-6 overflow-y-auto">
         <div>
           <h3 className="font-semibold text-lg flex items-center gap-2 mb-4">
-            <Activity className="w-5 h-5 text-primary" /> Active Context
+            <Activity className="w-5 h-5 text-primary" /> {t('dashboard.activeContext')}
           </h3>
           <Card className="bg-background">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm">Current Vitals</CardTitle>
+              <CardTitle className="text-sm">{t('dashboard.currentVitals')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
                 <div className="flex justify-between text-xs mb-1">
-                  <span className="text-muted-foreground">Heart Rate</span>
+                  <span className="text-muted-foreground">{t('dashboard.heartRate')}</span>
                   <span className="font-semibold text-emerald-500">72 bpm</span>
                 </div>
                 <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
@@ -174,7 +177,7 @@ export default function PatientDashboard() {
               </div>
               <div>
                 <div className="flex justify-between text-xs mb-1">
-                  <span className="text-muted-foreground">Blood Pressure</span>
+                  <span className="text-muted-foreground">{t('dashboard.bloodPressure')}</span>
                   <span className="font-semibold">118/78</span>
                 </div>
                 <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
@@ -187,26 +190,26 @@ export default function PatientDashboard() {
 
         <div>
           <h3 className="font-semibold text-lg flex items-center gap-2 mb-4">
-            <AlertCircle className="w-5 h-5 text-amber-500" /> Reminders
+            <AlertCircle className="w-5 h-5 text-amber-500" /> {t('dashboard.reminders')}
           </h3>
           <div className="space-y-3">
             <div className="p-3 rounded-lg border bg-amber-500/10 border-amber-500/20 text-sm">
-              <p className="font-semibold text-amber-600 dark:text-amber-400">Take Metoprolol</p>
-              <p className="text-muted-foreground text-xs mt-1">Due in 2 hours with food.</p>
+              <p className="font-semibold text-amber-600 dark:text-amber-400">{t('dashboard.takeMetoprolol')}</p>
+              <p className="text-muted-foreground text-xs mt-1">{t('dashboard.dueInHours')}</p>
             </div>
             <div className="p-3 rounded-lg border bg-background text-sm">
-              <p className="font-semibold">Upload CBC Report</p>
-              <p className="text-muted-foreground text-xs mt-1">Dr. Chen requested this yesterday.</p>
+              <p className="font-semibold">{t('dashboard.uploadCBC')}</p>
+              <p className="text-muted-foreground text-xs mt-1">{t('dashboard.drChenRequested')}</p>
             </div>
           </div>
         </div>
 
         <div>
            <h3 className="font-semibold text-lg flex items-center gap-2 mb-4">
-            <Clock className="w-5 h-5 text-primary" /> Memory Snapshot
+            <Clock className="w-5 h-5 text-primary" /> {t('dashboard.memorySnapshot')}
           </h3>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            etoh remembers you experienced mild lower back pain 3 weeks ago, and noted your allergic reaction to Penicillin.
+            {t('dashboard.memoryText')}
           </p>
         </div>
       </div>

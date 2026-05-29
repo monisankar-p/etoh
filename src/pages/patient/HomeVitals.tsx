@@ -2,8 +2,11 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../..
 import { Activity, HeartPulse, Droplet, Wind, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { generateVitalsTimeline } from '../../mock/data';
+import { useTranslation } from '../../i18n';
+import InsightPanel from '../../components/analytics/InsightPanel';
 
 export default function HomeVitals() {
+  const { t } = useTranslation();
   const vitalsData = generateVitalsTimeline();
 
   const MetricCard = ({ title, value, unit, icon: Icon, trend, color, trendUp }: any) => (
@@ -30,27 +33,34 @@ export default function HomeVitals() {
   );
 
   return (
-    <div className="p-8 h-full flex flex-col bg-muted/10 overflow-y-auto">
+    <div className="p-4 md:p-8 h-full flex flex-col bg-muted/10 overflow-y-auto">
       <div className="mb-8">
         <h1 className="text-3xl font-bold flex items-center gap-3">
           <Activity className="w-8 h-8 text-primary" />
-          Home Vitals Monitoring
+          {t('vitals.title')}
         </h1>
-        <p className="text-muted-foreground mt-2">Real-time sync from your Apple Health and connected wearables.</p>
+        <p className="text-muted-foreground mt-2">{t('vitals.subtitle')}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <MetricCard title="Resting Heart Rate" value="72" unit="bpm" icon={HeartPulse} trend="Stable vs yesterday" color="emerald" trendUp={true} />
-        <MetricCard title="Blood Pressure" value="118/78" unit="mmHg" icon={Activity} trend="Slightly elevated" color="primary" trendUp={false} />
-        <MetricCard title="Blood Oxygen" value="98" unit="%" icon={Wind} trend="Optimal" color="blue" trendUp={true} />
-        <MetricCard title="Glucose (Fasting)" value="108" unit="mg/dL" icon={Droplet} trend="Review recommended" color="amber" trendUp={false} />
+        <MetricCard title={t('vitals.restingHR')} value="72" unit={t('vitals.bpm')} icon={HeartPulse} trend={t('vitals.stableYesterday')} color="emerald" trendUp={true} />
+        <MetricCard title={t('vitals.bp')} value="118/78" unit={t('vitals.mmHg')} icon={Activity} trend={t('vitals.slightlyElevated')} color="primary" trendUp={false} />
+        <MetricCard title={t('vitals.bloodOxygen')} value="98" unit={t('vitals.percent')} icon={Wind} trend={t('vitals.optimal')} color="blue" trendUp={true} />
+        <MetricCard title={t('vitals.glucose')} value="108" unit={t('vitals.mgdl')} icon={Droplet} trend={t('vitals.reviewRecommended')} color="amber" trendUp={false} />
+      </div>
+
+      <div className="mb-8">
+        <InsightPanel 
+          title={t('vitals.aiInsights')}
+          insight="Vitals are stabilizing. The recent change in Metoprolol dosage seems to have effectively controlled resting heart rate. Fasting glucose is slightly elevated compared to your baseline; consider logging your dietary intake today."
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <Card className="h-[400px]">
           <CardHeader>
-            <CardTitle>Heart Rate Trends</CardTitle>
-            <CardDescription>Last 24 hours</CardDescription>
+            <CardTitle>{t('vitals.hrTrends')}</CardTitle>
+            <CardDescription>{t('vitals.last24h')}</CardDescription>
           </CardHeader>
           <CardContent className="h-[300px]">
              <ResponsiveContainer width="100%" height="100%">
@@ -72,8 +82,8 @@ export default function HomeVitals() {
 
         <Card className="h-[400px]">
           <CardHeader>
-            <CardTitle>Blood Pressure Fluctuations</CardTitle>
-            <CardDescription>Systolic tracking over 24h</CardDescription>
+            <CardTitle>{t('vitals.bpFluctuations')}</CardTitle>
+            <CardDescription>{t('vitals.systolicTracking')}</CardDescription>
           </CardHeader>
           <CardContent className="h-[300px]">
              <ResponsiveContainer width="100%" height="100%">

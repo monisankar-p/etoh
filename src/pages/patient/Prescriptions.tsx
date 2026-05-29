@@ -4,38 +4,78 @@ import { Button } from '../../components/ui/button';
 import { Pill, AlertTriangle, Clock, RotateCcw, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { SimulatedActionModal } from '../../components/ui/SimulatedActionModal';
+import { useTranslation } from '../../i18n';
+import ScoreGauge from '../../components/analytics/ScoreGauge';
+import TrendCard from '../../components/analytics/TrendCard';
+import InsightPanel from '../../components/analytics/InsightPanel';
 
 export default function Prescriptions() {
+  const { t } = useTranslation();
+
   const [activeMeds, setActiveMeds] = useState([
-    { id: 1, name: 'Metoprolol', dosage: '50mg', frequency: 'Twice daily', status: 'active', remaining: 14, refillStatus: 'available', alert: null },
-    { id: 2, name: 'Atorvastatin', dosage: '20mg', frequency: 'Once daily at bedtime', status: 'active', remaining: 30, refillStatus: 'not_needed', alert: null },
-    { id: 3, name: 'Ibuprofen', dosage: '400mg', frequency: 'As needed for pain', status: 'caution', remaining: 5, refillStatus: 'available', alert: 'Potential interaction with Warfarin' },
+    { id: 1, name: 'Metoprolol', dosage: '50mg', frequency: t('meds.twiceDaily'), status: 'active', remaining: 14, refillStatus: 'available', alert: null },
+    { id: 2, name: 'Atorvastatin', dosage: '20mg', frequency: t('meds.onceDailyBedtime'), status: 'active', remaining: 30, refillStatus: 'not_needed', alert: null },
+    { id: 3, name: 'Ibuprofen', dosage: '400mg', frequency: t('meds.asNeeded'), status: 'caution', remaining: 5, refillStatus: 'available', alert: 'Potential interaction with Warfarin' },
   ]);
 
   const [modalConfig, setModalConfig] = useState<{isOpen: boolean; title: string; medId: number; medName: string}>({ isOpen: false, title: '', medId: 0, medName: '' });
 
   const handleRefillRequest = (id: number, name: string) => {
-    setModalConfig({ isOpen: true, title: 'Request Refill', medId: id, medName: name });
+    setModalConfig({ isOpen: true, title: t('meds.requestRefill'), medId: id, medName: name });
   };
 
   const confirmRefill = () => {
     setActiveMeds(meds => meds.map(med => 
       med.id === modalConfig.medId ? { ...med, refillStatus: 'requested' } : med
     ));
-    toast.success(`Refill requested for ${modalConfig.medName}`, { description: 'Your doctor will review the request shortly.' });
+    toast.success(`${t('meds.refillRequested')} ${modalConfig.medName}`);
   };
 
   return (
-    <div className="p-8 h-full flex flex-col bg-muted/10 overflow-y-auto">
-      <div className="mb-8">
+    <div className="p-4 md:p-8 h-full flex flex-col bg-muted/10 overflow-y-auto">
+      <div className="mb-8 max-w-6xl mx-auto w-full">
         <h1 className="text-3xl font-bold flex items-center gap-3">
           <Pill className="w-8 h-8 text-primary" />
-          Active Prescriptions
+          {t('meds.title')}
         </h1>
-        <p className="text-muted-foreground mt-2">Manage your current medications and view AI safety interactions.</p>
+        <p className="text-muted-foreground mt-2">{t('meds.subtitle')}</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="max-w-6xl mx-auto w-full space-y-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card className="flex items-center justify-center p-6 bg-card">
+            <ScoreGauge 
+              score={92} 
+              title={t('meds.adherenceScore')} 
+              subtitle={t('analytics.trendStable')} 
+            />
+          </Card>
+          <div className="md:col-span-2 grid grid-cols-2 gap-4">
+            <TrendCard
+              title={t('meds.adherenceTrend')}
+              value="92%"
+              trend="stable"
+              trendLabel={t('analytics.last30Days')}
+              sparklineData={[85, 88, 90, 92, 92, 92]}
+            />
+            <TrendCard
+              title={t('meds.missedDoses')}
+              value="2"
+              trend="up"
+              trendLabel={t('analytics.trendUp')}
+              sparklineColor="var(--color-emerald-500)"
+              sparklineData={[5, 4, 3, 2, 2, 2]}
+            />
+          </div>
+        </div>
+
+        <InsightPanel 
+          title={t('analytics.aiInsight')}
+          insight="Your medication adherence is excellent at 92%. However, there is a known caution alert between Ibuprofen and Warfarin. Consider using an alternative pain reliever after consulting Dr. Chen."
+        />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto w-full">
         <div className="lg:col-span-2 space-y-4">
           {activeMeds.map((med) => (
             <Card key={med.id} className={`overflow-hidden transition-all hover:shadow-md ${med.status === 'caution' ? 'border-amber-500/50 bg-amber-500/5' : ''}`}>
@@ -51,7 +91,7 @@ export default function Prescriptions() {
                     </div>
                     {med.status === 'caution' && (
                       <span className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider px-2 py-1 bg-amber-500 text-white rounded">
-                        <AlertTriangle className="w-3 h-3" /> Caution
+                        <AlertTriangle className="w-3 h-3" /> {t('meds.caution')}
                       </span>
                     )}
                   </div>
@@ -64,27 +104,27 @@ export default function Prescriptions() {
                   {med.alert && (
                     <div className="p-3 bg-amber-500/10 text-amber-700 dark:text-amber-400 rounded-lg text-sm flex items-start gap-2 mt-2">
                       <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
-                      <p><strong>etoh AI Safety Alert:</strong> {med.alert}. Please consult your doctor before taking.</p>
+                      <p><strong>{t('meds.safetyAlert')}</strong> {med.alert}. {t('meds.consultDoctor')}</p>
                     </div>
                   )}
 
                   <div className="flex justify-between items-center mt-6 pt-4 border-t">
                      <p className="text-sm font-medium text-muted-foreground">
-                       {med.remaining} pills remaining
+                       {t('meds.remaining', { count: med.remaining.toString() })}
                      </p>
                      {med.refillStatus === 'available' && (
                        <Button size="sm" variant="outline" className="gap-2" onClick={() => handleRefillRequest(med.id, med.name)}>
-                         <RotateCcw className="w-4 h-4" /> Request Refill
+                         <RotateCcw className="w-4 h-4" /> {t('meds.requestRefill')}
                        </Button>
                      )}
                      {med.refillStatus === 'requested' && (
                        <div className="flex items-center gap-1 text-amber-500 text-sm font-medium px-3 py-1.5 bg-amber-500/10 rounded-md">
-                         <Clock className="w-4 h-4" /> Refill Requested
+                         <Clock className="w-4 h-4" /> {t('meds.refillRequested')}
                        </div>
                      )}
                      {med.refillStatus === 'not_needed' && (
                        <div className="flex items-center gap-1 text-emerald-500 text-sm font-medium">
-                         <CheckCircle2 className="w-4 h-4" /> Refill not needed
+                         <CheckCircle2 className="w-4 h-4" /> {t('meds.refillNotNeeded')}
                        </div>
                      )}
                   </div>
@@ -97,15 +137,15 @@ export default function Prescriptions() {
         <div className="space-y-6">
           <Card className="bg-primary text-primary-foreground border-none">
             <CardHeader>
-              <CardTitle>Pharmacy Pickup</CardTitle>
+              <CardTitle>{t('meds.pharmacyPickup')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="bg-white/10 p-4 rounded-xl space-y-2">
                 <p className="font-semibold">CVS Pharmacy #1234</p>
                 <p className="text-sm text-primary-foreground/80">123 Health Ave, Medical City</p>
                 <div className="pt-2 mt-2 border-t border-white/20">
-                  <p className="text-xs font-bold uppercase">Status</p>
-                  <p className="text-sm">2 prescriptions ready for pickup</p>
+                  <p className="text-xs font-bold uppercase">{t('meds.status')}</p>
+                  <p className="text-sm">{t('meds.readyForPickup')}</p>
                 </div>
               </div>
             </CardContent>
@@ -113,14 +153,14 @@ export default function Prescriptions() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Past Medications</CardTitle>
-              <CardDescription>Recently discontinued</CardDescription>
+              <CardTitle className="text-lg">{t('meds.pastMedications')}</CardTitle>
+              <CardDescription>{t('meds.recentlyDiscontinued')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
                <div className="flex justify-between items-center p-3 rounded-lg border bg-muted/30">
                  <div>
                    <p className="font-medium line-through text-muted-foreground">Amoxicillin 500mg</p>
-                   <p className="text-xs text-muted-foreground">Course completed Oct 1st</p>
+                   <p className="text-xs text-muted-foreground">{t('meds.courseCompleted')}</p>
                  </div>
                </div>
             </CardContent>
@@ -132,12 +172,12 @@ export default function Prescriptions() {
         isOpen={modalConfig.isOpen}
         onClose={() => setModalConfig({ isOpen: false, title: '', medId: 0, medName: '' })}
         title={modalConfig.title}
-        description={`Confirm prescription refill details for ${modalConfig.medName}.`}
+        description={t('meds.confirmRefill', { name: modalConfig.medName })}
         type="form"
-        actionLabel="Submit Request"
+        actionLabel={t('meds.submitRequest')}
         fields={[
-          { name: 'pharmacy', label: 'Preferred Pharmacy', placeholder: 'e.g. CVS Pharmacy #1234' },
-          { name: 'notes', label: 'Additional Notes', placeholder: 'Any messages for the doctor?' },
+          { name: 'pharmacy', label: t('meds.preferredPharmacy'), placeholder: 'e.g. CVS Pharmacy #1234' },
+          { name: 'notes', label: t('meds.additionalNotes'), placeholder: 'Any messages for the doctor?' },
         ]}
         onActionComplete={confirmRefill}
       />

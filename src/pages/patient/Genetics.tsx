@@ -5,6 +5,7 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { MockAIService } from '../../services/mockAIService';
 import { familyVitalsTimeline } from '../../mock/data';
+import { useTranslation } from '../../i18n';
 import {
   LineChart,
   Line,
@@ -36,6 +37,7 @@ const initialMembers: FamilyMember[] = [
 ];
 
 export default function Genetics() {
+  const { t } = useTranslation();
   const [members, setMembers] = useState<FamilyMember[]>(initialMembers);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newMember, setNewMember] = useState<Partial<FamilyMember>>({ gender: 'M', generation: 'parents', side: 'paternal' });
@@ -115,12 +117,12 @@ export default function Genetics() {
         <div>
           <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-3 mb-2">
             <Dna className="w-8 h-8 text-primary" />
-            Family Health & Genetics Dashboard
+            {t('genetics.title')}
           </h1>
-          <p className="text-muted-foreground text-sm md:text-base">Interactive genetic mapping, cross-family longitudinal tracking, and inherited disease risk profiles.</p>
+          <p className="text-muted-foreground text-sm md:text-base">{t('genetics.subtitle')}</p>
         </div>
         <Button className="bg-primary hover:bg-primary/90 gap-2 w-full sm:w-auto" onClick={() => setIsModalOpen(true)}>
-          <UserPlus className="w-4 h-4" /> Add Relative
+          <UserPlus className="w-4 h-4" /> {t('genetics.addRelative')}
         </Button>
       </div>
 
@@ -173,7 +175,7 @@ export default function Genetics() {
                       </div>
                     </div>
                     <p className="text-sm font-bold">Alex Johnson</p>
-                    <p className="text-xs font-bold text-amber-500 mt-0.5">Elevated BP Risk</p>
+                    <p className="text-xs font-bold text-amber-500 mt-0.5">{t('genetics.elevatedBPRisk')}</p>
                 </div>
 
               </div>
@@ -185,15 +187,15 @@ export default function Genetics() {
             <CardHeader>
               <CardTitle className="text-lg flex flex-col sm:flex-row sm:items-center justify-between w-full gap-2">
                 <div className="flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-primary" /> Cross-Generational Trajectories
+                  <TrendingUp className="w-5 h-5 text-primary" /> {t('genetics.crossGen')}
                 </div>
                 <div className="flex bg-muted/50 p-1 rounded-lg gap-1">
-                  <Button variant={selectedVital === 'Systolic BP' ? 'default' : 'ghost'} size="sm" className="h-7 text-xs" onClick={() => setSelectedVital('Systolic BP')}>Systolic BP</Button>
-                  <Button variant={selectedVital === 'HbA1c' ? 'default' : 'ghost'} size="sm" className="h-7 text-xs" onClick={() => setSelectedVital('HbA1c')}>HbA1c</Button>
-                  <Button variant={selectedVital === 'Cholesterol' ? 'default' : 'ghost'} size="sm" className="h-7 text-xs" onClick={() => setSelectedVital('Cholesterol')}>Cholesterol</Button>
+                  <Button variant={selectedVital === 'Systolic BP' ? 'default' : 'ghost'} size="sm" className="h-7 text-xs" onClick={() => setSelectedVital('Systolic BP')}>{t('genetics.systolicBP')}</Button>
+                  <Button variant={selectedVital === 'HbA1c' ? 'default' : 'ghost'} size="sm" className="h-7 text-xs" onClick={() => setSelectedVital('HbA1c')}>{t('genetics.hba1c')}</Button>
+                  <Button variant={selectedVital === 'Cholesterol' ? 'default' : 'ghost'} size="sm" className="h-7 text-xs" onClick={() => setSelectedVital('Cholesterol')}>{t('genetics.cholesterol')}</Button>
                 </div>
               </CardTitle>
-              <CardDescription>Comparing longitudinal vital trends across immediate family members to detect hereditary progression.</CardDescription>
+              <CardDescription>{t('genetics.crossGenDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="h-[300px] w-full">
@@ -245,9 +247,9 @@ export default function Genetics() {
           <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20 shadow-md">
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-primary" /> AI Hereditary Insights
+                <Sparkles className="w-5 h-5 text-primary" /> {t('genetics.aiInsights')}
               </CardTitle>
-              <CardDescription>Predictive preventive healthcare recommendations based on your family graph.</CardDescription>
+              <CardDescription>{t('genetics.aiInsightsDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
                <div className="text-sm leading-relaxed text-foreground min-h-[100px] flex items-center">
@@ -268,8 +270,8 @@ export default function Genetics() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2"><Activity className="w-5 h-5 text-primary" /> Shared Disease Patterns</CardTitle>
-              <CardDescription>Recurring chronic conditions mapped in family tree.</CardDescription>
+              <CardTitle className="text-lg flex items-center gap-2"><Activity className="w-5 h-5 text-primary" /> {t('genetics.diseasePatterns')}</CardTitle>
+              <CardDescription>{t('genetics.diseasePatternsDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {members.filter(m => m.condition).map((r, i) => (
@@ -280,13 +282,13 @@ export default function Genetics() {
                   </div>
                   <div className="text-right flex flex-col items-end">
                     <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full mt-1 bg-${r.conditionColor || 'primary'}/10 text-${r.conditionColor || 'primary'}`}>
-                      Flagged
+                      {t('genetics.flagged')}
                     </span>
                   </div>
                 </div>
               ))}
               {members.filter(m => m.condition).length === 0 && (
-                <p className="text-sm text-muted-foreground">No significant genetic conditions mapped.</p>
+                <p className="text-sm text-muted-foreground">{t('genetics.noConditions')}</p>
               )}
             </CardContent>
           </Card>
@@ -299,8 +301,8 @@ export default function Genetics() {
           <Card className="w-full max-w-md shadow-2xl border-primary/30">
             <CardHeader className="border-b bg-primary/5 flex flex-row items-center justify-between">
               <div>
-                <CardTitle>Add Family Member</CardTitle>
-                <CardDescription>Update your genetic health tree.</CardDescription>
+                <CardTitle>{t('genetics.addMember')}</CardTitle>
+                <CardDescription>{t('genetics.updateTree')}</CardDescription>
               </div>
               <Button variant="ghost" size="icon" onClick={() => setIsModalOpen(false)}>
                 <X className="w-5 h-5" />
@@ -308,7 +310,7 @@ export default function Genetics() {
             </CardHeader>
             <CardContent className="space-y-4 pt-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Relationship (e.g., Uncle, Sister)</label>
+                <label className="text-sm font-medium">{t('genetics.relationship')}</label>
                 <Input 
                   value={newMember.relation || ''} 
                   onChange={e => setNewMember({...newMember, relation: e.target.value})} 
@@ -317,42 +319,42 @@ export default function Genetics() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Gender</label>
+                  <label className="text-sm font-medium">{t('genetics.gender')}</label>
                   <select 
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     value={newMember.gender}
                     onChange={e => setNewMember({...newMember, gender: e.target.value as any})}
                   >
-                    <option value="M">Male (Square)</option>
-                    <option value="F">Female (Circle)</option>
+                    <option value="M">{t('genetics.male')}</option>
+                    <option value="F">{t('genetics.female')}</option>
                   </select>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Generation</label>
+                  <label className="text-sm font-medium">{t('genetics.generation')}</label>
                   <select 
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     value={newMember.generation}
                     onChange={e => setNewMember({...newMember, generation: e.target.value as any})}
                   >
-                    <option value="grandparents">Grandparents</option>
-                    <option value="parents">Parents / Aunts / Uncles</option>
+                    <option value="grandparents">{t('genetics.grandparents')}</option>
+                    <option value="parents">{t('genetics.parentsGen')}</option>
                   </select>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Side of Family</label>
+                  <label className="text-sm font-medium">{t('genetics.familySide')}</label>
                   <select 
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     value={newMember.side}
                     onChange={e => setNewMember({...newMember, side: e.target.value as any})}
                   >
-                    <option value="paternal">Paternal</option>
-                    <option value="maternal">Maternal</option>
+                    <option value="paternal">{t('genetics.paternal')}</option>
+                    <option value="maternal">{t('genetics.maternal')}</option>
                   </select>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Known Condition</label>
+                  <label className="text-sm font-medium">{t('genetics.knownCondition')}</label>
                   <Input 
                     value={newMember.condition || ''} 
                     onChange={e => setNewMember({...newMember, condition: e.target.value})} 
@@ -362,8 +364,8 @@ export default function Genetics() {
               </div>
             </CardContent>
             <div className="p-6 border-t flex justify-end gap-2 bg-muted/30">
-              <Button variant="outline" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-              <Button className="bg-primary hover:bg-primary/90" onClick={handleAddMember}>Add to Tree</Button>
+              <Button variant="outline" onClick={() => setIsModalOpen(false)}>{t('common.cancel')}</Button>
+              <Button className="bg-primary hover:bg-primary/90" onClick={handleAddMember}>{t('genetics.addToTree')}</Button>
             </div>
           </Card>
         </div>

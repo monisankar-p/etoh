@@ -1,5 +1,8 @@
 import { faker } from '@faker-js/faker';
 
+// Seed faker for consistent data across renders during dev
+faker.seed(123);
+
 export const generatePatients = (count: number) => {
   return Array.from({ length: count }).map(() => ({
     id: faker.string.uuid(),
@@ -48,3 +51,101 @@ export const familyVitalsTimeline = Array.from({ length: 12 }).map((_, i) => ({
   motherCholesterol: faker.number.int({ min: 190, max: 230 }),
 }));
 
+
+// --- New Analytics Generators for Patient Dashboards ---
+
+export const generateVitalsHistory = (days: number = 30) => {
+  return Array.from({ length: days }).map((_, i) => {
+    const date = new Date();
+    date.setDate(date.getDate() - (days - i));
+    
+    // Create a slight upward trend in BP to trigger AI warnings
+    const trendFactor = i / days;
+    
+    return {
+      date: date.toISOString().split('T')[0],
+      displayDate: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      heartRate: faker.number.int({ min: 62, max: 85 }),
+      systolic: faker.number.int({ min: 115 + (trendFactor * 10), max: 125 + (trendFactor * 15) }),
+      diastolic: faker.number.int({ min: 75 + (trendFactor * 5), max: 82 + (trendFactor * 8) }),
+      spo2: faker.number.int({ min: 96, max: 100 }),
+      temperature: faker.number.float({ min: 97.8, max: 99.1, fractionDigits: 1 }),
+      sleepHours: faker.number.float({ min: 5.5, max: 8.5, fractionDigits: 1 }),
+    };
+  });
+};
+
+export const generateMedicationAdherence = (days: number = 30) => {
+  return Array.from({ length: days }).map((_, i) => {
+    const date = new Date();
+    date.setDate(date.getDate() - (days - i));
+    return {
+      date: date.toISOString().split('T')[0],
+      displayDate: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      taken: faker.number.int({ min: 1, max: 3 }),
+      prescribed: 3,
+      // Boolean true 85% of the time
+      isCompliant: faker.number.int({ min: 1, max: 100 }) > 15,
+    };
+  });
+};
+
+export const generateLabHistory = (months: number = 6) => {
+  return Array.from({ length: months }).map((_, i) => {
+    const date = new Date();
+    date.setMonth(date.getMonth() - (months - i));
+    return {
+      date: date.toISOString().split('T')[0],
+      month: date.toLocaleDateString('en-US', { month: 'short' }),
+      hba1c: faker.number.float({ min: 5.4, max: 6.8, fractionDigits: 1 }),
+      ldl: faker.number.int({ min: 90, max: 140 }),
+      hdl: faker.number.int({ min: 40, max: 60 }),
+      triglycerides: faker.number.int({ min: 100, max: 180 }),
+      creatinine: faker.number.float({ min: 0.8, max: 1.3, fractionDigits: 1 }),
+      bun: faker.number.int({ min: 10, max: 20 }),
+    };
+  });
+};
+
+export const generateAppointmentHistory = () => {
+  const specialties = ['Cardiology', 'Primary Care', 'Neurology', 'Endocrinology'];
+  const doctors = ['Dr. Chen', 'Dr. Smith', 'Dr. Patel', 'Dr. Rodriguez'];
+  const statuses = ['Completed', 'Completed', 'Completed', 'Missed', 'Cancelled'];
+  
+  return Array.from({ length: 10 }).map((_, i) => {
+    const date = faker.date.past({ years: 1 });
+    const isFuture = i < 2; // Make first two upcoming
+    const apptDate = isFuture ? faker.date.soon({ days: 30 }) : date;
+    
+    return {
+      id: faker.string.uuid(),
+      date: apptDate.toISOString(),
+      displayDate: apptDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      time: `${faker.number.int({ min: 9, max: 16 })}:00 ${faker.helpers.arrayElement(['AM', 'PM'])}`,
+      doctor: faker.helpers.arrayElement(doctors),
+      specialty: faker.helpers.arrayElement(specialties),
+      status: isFuture ? 'Confirmed' : faker.helpers.arrayElement(statuses),
+      location: faker.helpers.arrayElement(['Main Campus', 'West Wing Clinic', 'Telehealth']),
+    };
+  }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+};
+
+export const generateSymptomHistory = () => {
+  const symptoms = ['Headache', 'Lower Back Pain', 'Fatigue', 'Dizziness', 'Chest Tightness', 'Nausea'];
+  const regions = ['Head', 'Back', 'General', 'Head', 'Chest', 'Abdomen'];
+  
+  return Array.from({ length: 15 }).map(() => {
+    const date = faker.date.past({ years: 0.5 });
+    const symptomIndex = faker.number.int({ min: 0, max: 5 });
+    
+    return {
+      id: faker.string.uuid(),
+      date: date.toISOString(),
+      displayDate: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      name: symptoms[symptomIndex],
+      region: regions[symptomIndex],
+      severity: faker.helpers.arrayElement(['Mild', 'Moderate', 'Severe']),
+      notes: faker.lorem.sentence(),
+    };
+  }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+};

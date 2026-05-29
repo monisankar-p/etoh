@@ -5,8 +5,11 @@ import { UploadCloud, FileText, CheckCircle2, AlertTriangle, ChevronRight, Activ
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { DocumentViewer } from '../../components/ui/DocumentViewer';
+import { useTranslation } from '../../i18n';
+import TrendCard from '../../components/analytics/TrendCard';
 
 export default function ReportIntelligence() {
+  const { t } = useTranslation();
   const [isUploading, setIsUploading] = useState(false);
   const [isAnalyzed, setIsAnalyzed] = useState(false);
   const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
@@ -42,14 +45,14 @@ export default function ReportIntelligence() {
   };
 
   return (
-    <div className="p-8 h-full flex flex-col bg-muted/10 overflow-y-auto">
+    <div className="p-4 md:p-8 h-full flex flex-col bg-muted/10 overflow-y-auto">
       <div className="mb-8 flex justify-between items-end">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
             <FileText className="w-8 h-8 text-primary" />
-            Report Intelligence
+            {t('reports.title')}
           </h1>
-          <p className="text-muted-foreground mt-2">Upload medical records, lab results, and imaging reports for AI-powered analysis.</p>
+          <p className="text-muted-foreground mt-2">{t('reports.subtitle')}</p>
         </div>
       </div>
 
@@ -68,7 +71,7 @@ export default function ReportIntelligence() {
                     className="absolute inset-0 bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center z-10"
                   >
                     <Sparkles className="w-8 h-8 text-primary animate-pulse mb-4" />
-                    <p className="font-semibold text-primary">etoh AI is Analyzing...</p>
+                    <p className="font-semibold text-primary">{t('reports.aiAnalyzing')}</p>
                     <div className="w-3/4 h-2 bg-muted rounded-full mt-4 overflow-hidden">
                       <motion.div 
                         initial={{ width: 0 }} 
@@ -84,15 +87,15 @@ export default function ReportIntelligence() {
               <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                 <UploadCloud className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">Drag & Drop Reports</h3>
-              <p className="text-sm text-muted-foreground mb-6">Supports PDF, JPG, PNG (Max 50MB)</p>
-              <Button onClick={handleUpload} disabled={isUploading || isAnalyzed}>Browse Files</Button>
+              <h3 className="text-lg font-semibold mb-2">{t('reports.dragDrop')}</h3>
+              <p className="text-sm text-muted-foreground mb-6">{t('reports.supportedFormats')}</p>
+              <Button onClick={handleUpload} disabled={isUploading || isAnalyzed}>{t('reports.browseFiles')}</Button>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm text-muted-foreground">Recent Analyses</CardTitle>
+              <CardTitle className="text-sm text-muted-foreground">{t('reports.recentAnalyses')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {reports.map((report) => {
@@ -104,7 +107,7 @@ export default function ReportIntelligence() {
                     </div>
                     <div className="flex-1 overflow-hidden">
                       <p className="font-medium truncate">{report.title}</p>
-                      <p className="text-xs text-muted-foreground">Analyzed {report.date}</p>
+                      <p className="text-xs text-muted-foreground">{t('reports.analyzed')} {report.date}</p>
                     </div>
                     <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => handleDownload(report.title, e)}>
                       <Download className="w-4 h-4 text-muted-foreground" />
@@ -114,6 +117,13 @@ export default function ReportIntelligence() {
               })}
             </CardContent>
           </Card>
+
+          {/* Added Lab Analytics summary to sidebar */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-muted-foreground">{t('reports.labAnalytics')}</h3>
+            <TrendCard title="HbA1c" value="5.8%" trend="stable" trendLabel={t('analytics.trendStable')} sparklineData={[6.1, 6.0, 5.9, 5.8, 5.8]} />
+            <TrendCard title="LDL Cholesterol" value="110 mg/dL" trend="up" trendLabel={t('analytics.trendDown')} sparklineColor="var(--color-destructive)" sparklineData={[95, 100, 105, 110]} />
+          </div>
         </div>
 
         {/* AI Analysis Results */}
@@ -132,7 +142,7 @@ export default function ReportIntelligence() {
                     </div>
                     <div className="flex gap-2">
                       <Button variant="outline" size="sm" onClick={() => setIsPdfModalOpen(true)}>
-                        <Eye className="w-4 h-4 mr-2" /> View Original Report
+                        <Eye className="w-4 h-4 mr-2" /> {t('reports.viewOriginal')}
                       </Button>
                       <Button variant="ghost" size="sm" onClick={() => setIsAnalyzed(false)}>Clear</Button>
                     </div>
@@ -143,16 +153,16 @@ export default function ReportIntelligence() {
                   {/* Summary */}
                   <div className="space-y-3">
                     <h3 className="font-semibold flex items-center gap-2">
-                      <Sparkles className="w-5 h-5 text-primary" /> etoh AI Summary
+                      <Sparkles className="w-5 h-5 text-primary" /> {t('reports.aiSummary')}
                     </h3>
                     <p className="text-muted-foreground leading-relaxed p-4 bg-primary/5 rounded-xl border border-primary/10">
-                      Overall, the metabolic panel shows stable kidney and liver function. However, the fasting glucose level is slightly elevated (108 mg/dL), indicating potential pre-diabetes. Potassium levels are at the lower end of the normal range (3.6 mEq/L).
+                      {t('reports.metabolicPanelSummary')}
                     </p>
                   </div>
 
                   {/* Biomarkers */}
                   <div>
-                    <h3 className="font-semibold mb-4">Key Biomarker Flags</h3>
+                    <h3 className="font-semibold mb-4">{t('reports.biomarkerFlags')}</h3>
                     <div className="space-y-3">
                       <div className="flex items-center justify-between p-4 rounded-xl border bg-amber-500/5 border-amber-500/20">
                         <div className="flex items-center gap-4">
@@ -161,11 +171,11 @@ export default function ReportIntelligence() {
                           </div>
                           <div>
                             <p className="font-semibold">Glucose, Fasting</p>
-                            <p className="text-sm text-muted-foreground">Reference: 65 - 99 mg/dL</p>
+                            <p className="text-sm text-muted-foreground">{t('reports.reference')} 65 - 99 mg/dL</p>
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="font-bold text-amber-500 text-xl">108 mg/dL <span className="text-sm text-muted-foreground font-normal">(High)</span></p>
+                          <p className="font-bold text-amber-500 text-xl">108 mg/dL <span className="text-sm text-muted-foreground font-normal">({t('reports.high')})</span></p>
                         </div>
                       </div>
 
@@ -176,11 +186,11 @@ export default function ReportIntelligence() {
                           </div>
                           <div>
                             <p className="font-semibold">Creatinine</p>
-                            <p className="text-sm text-muted-foreground">Reference: 0.76 - 1.27 mg/dL</p>
+                            <p className="text-sm text-muted-foreground">{t('reports.reference')} 0.76 - 1.27 mg/dL</p>
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="font-bold text-emerald-500 text-xl">0.92 mg/dL <span className="text-sm text-muted-foreground font-normal">(Normal)</span></p>
+                          <p className="font-bold text-emerald-500 text-xl">0.92 mg/dL <span className="text-sm text-muted-foreground font-normal">({t('reports.normal')})</span></p>
                         </div>
                       </div>
                       
@@ -191,11 +201,11 @@ export default function ReportIntelligence() {
                           </div>
                           <div>
                             <p className="font-semibold">Potassium</p>
-                            <p className="text-sm text-muted-foreground">Reference: 3.5 - 5.2 mEq/L</p>
+                            <p className="text-sm text-muted-foreground">{t('reports.reference')} 3.5 - 5.2 mEq/L</p>
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="font-bold text-foreground text-xl">3.6 mEq/L <span className="text-sm text-muted-foreground font-normal">(Low Normal)</span></p>
+                          <p className="font-bold text-foreground text-xl">3.6 mEq/L <span className="text-sm text-muted-foreground font-normal">({t('reports.lowNormal')})</span></p>
                         </div>
                       </div>
                     </div>
@@ -203,16 +213,16 @@ export default function ReportIntelligence() {
                   
                   {/* Actionable Advice */}
                   <div className="pt-4 border-t">
-                    <Button className="w-full gap-2">Discuss with etoh Copilot <ChevronRight className="w-4 h-4" /></Button>
+                    <Button className="w-full gap-2">{t('reports.discussCopilot')} <ChevronRight className="w-4 h-4" /></Button>
                   </div>
                 </CardContent>
               </Card>
             </motion.div>
           ) : (
-            <div className="h-full flex items-center justify-center border-2 border-dashed rounded-xl bg-muted/10">
+            <div className="h-full flex items-center justify-center border-2 border-dashed rounded-xl bg-muted/10 min-h-[400px]">
               <div className="text-center text-muted-foreground max-w-sm">
                 <FileText className="w-16 h-16 mx-auto mb-4 opacity-20" />
-                <p>Upload a report to see the AI-generated intelligence and extracted insights here.</p>
+                <p>{t('reports.uploadPrompt')}</p>
               </div>
             </div>
           )}

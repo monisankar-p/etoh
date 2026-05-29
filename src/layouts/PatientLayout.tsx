@@ -1,26 +1,30 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Sparkles, FileText, HeartPulse, Pill, Activity, Settings, LogOut, Clock, FileImage, Dna, Stethoscope, CreditCard, Menu } from 'lucide-react';
+import { Sparkles, FileText, HeartPulse, Pill, Activity, Settings, LogOut, Clock, FileImage, Dna, Stethoscope, CreditCard, Menu, Calendar, Thermometer, Globe } from 'lucide-react';
 import { useAuthStore } from '../stores/useAuthStore';
 import { Button } from '../components/ui/button';
 import { useState } from 'react';
-
-const navItems = [
-  { icon: Sparkles, label: 'AI Health Copilot', path: '/patient', end: true },
-  { icon: FileText, label: 'Report Intelligence', path: '/patient/reports' },
-  { icon: FileImage, label: 'Tests & Imaging', path: '/patient/tests' },
-  { icon: Pill, label: 'Prescriptions', path: '/patient/prescriptions' },
-  { icon: Activity, label: 'Home Vitals', path: '/patient/vitals' },
-  { icon: Clock, label: 'Health Timeline', path: '/patient/timeline' },
-  { icon: Dna, label: 'Genetics & Family', path: '/patient/genetics' },
-  { icon: Stethoscope, label: 'Symptom Triage', path: '/patient/triage' },
-  { icon: CreditCard, label: 'Billing & Insurance', path: '/patient/billing' },
-];
+import { useTranslation, type LanguageCode } from '../i18n';
 
 export default function PatientLayout() {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { t, language, setLanguage, languages } = useTranslation();
+
+  const navItems = [
+    { icon: Sparkles, label: t('nav.healthCopilot'), path: '/patient', end: true },
+    { icon: FileText, label: t('nav.reports'), path: '/patient/reports' },
+    { icon: FileImage, label: t('nav.tests'), path: '/patient/tests' },
+    { icon: Pill, label: t('nav.prescriptions'), path: '/patient/prescriptions' },
+    { icon: Activity, label: t('nav.vitals'), path: '/patient/vitals' },
+    { icon: Clock, label: t('nav.timeline'), path: '/patient/timeline' },
+    { icon: Dna, label: t('nav.genetics'), path: '/patient/genetics' },
+    { icon: Stethoscope, label: t('nav.triage'), path: '/patient/triage' },
+    { icon: CreditCard, label: t('nav.billing'), path: '/patient/billing' },
+    { icon: Calendar, label: t('nav.appointments'), path: '/patient/appointments' },
+    { icon: Thermometer, label: t('nav.symptoms'), path: '/patient/symptoms' },
+  ];
 
   const handleLogout = () => {
     logout();
@@ -55,7 +59,7 @@ export default function PatientLayout() {
             </div>
             <div className="flex-1 overflow-hidden">
               <p className="text-sm font-semibold truncate">{user?.name}</p>
-              <p className="text-xs text-muted-foreground truncate">Premium AI Care</p>
+              <p className="text-xs text-muted-foreground truncate">{t('common.premiumCare')}</p>
             </div>
           </div>
         </div>
@@ -84,13 +88,30 @@ export default function PatientLayout() {
         </nav>
 
         <div className="p-4 border-t space-y-2">
+          {/* Language Selector */}
+          <div className="relative flex items-center gap-3 px-4 py-2 w-full text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-xl hover:bg-accent cursor-pointer group">
+            <Globe className="w-5 h-5 flex-shrink-0" />
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value as LanguageCode)}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            >
+              {languages.map(lang => (
+                <option key={lang.code} value={lang.code}>
+                  {lang.nativeLabel} ({lang.label})
+                </option>
+              ))}
+            </select>
+            <span className="flex-1 text-left">{languages.find(l => l.code === language)?.nativeLabel || 'Language'}</span>
+          </div>
+
           <Button variant="ghost" className="w-full justify-start gap-3" onClick={() => navigate('/patient/settings')}>
-            <Settings className="w-5 h-5" />
-            Settings
+            <Settings className="w-5 h-5 flex-shrink-0" />
+            {t('common.settings')}
           </Button>
           <Button variant="ghost" className="w-full justify-start gap-3 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={handleLogout}>
-            <LogOut className="w-5 h-5" />
-            Sign Out
+            <LogOut className="w-5 h-5 flex-shrink-0" />
+            {t('common.signOut')}
           </Button>
         </div>
       </motion.aside>
